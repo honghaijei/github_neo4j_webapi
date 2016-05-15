@@ -36,7 +36,7 @@ def get_project_news(name):
     cocomo = { 'codebase_size': codebase_size, 'estimated_effort': estimated_effort, 'estimated_cost': estimated_cost, "all_code": lines[0], 'logic_code_only': lines[1], 'markup_only': lines[2], 'build_scripts_only': lines[3] }
 
 
-    language_page = etree.HTML(get_page('https://www.openhub.net/p/' + name + '/analyses/latest/languages_summary').lower().decode('utf-8'))
+    language_page = etree.HTML(get_page('https://www.openhub.net/p/' + name + '/analyses/latest/languages_summary').decode('utf-8'))
 
     languages_table = language_page.xpath(u"//*[@id=\"analyses_language_table\"]")[0]
     data = [x for c in languages_table.getchildren() for x in c.getchildren()][2:-2]

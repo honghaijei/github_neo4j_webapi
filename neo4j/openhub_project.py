@@ -5,7 +5,7 @@ import datetime
 
 
 def get_project(name):
-    project_page = etree.HTML(get_page('https://www.openhub.net/p/' + name).lower().decode('utf-8'))
+    project_page = etree.HTML(get_page('https://www.openhub.net/p/' + name).decode('utf-8'))
 
     project_name = project_page.xpath(u"//*[@id=\"project_header\"]/div[1]/h1/a")[0].text
     project_tag = project_page.xpath(u"//*[@id=\"project_tags\"]/p")[0].text
@@ -16,7 +16,7 @@ def get_project(name):
 
     licenses = project_page.xpath(u"//*[@id=\"page_contents\"]/div[3]/div[2]/div/dl/dd[3]")[0].text
 
-    location_page = etree.HTML(get_page('https://www.openhub.net/p/' + name + '/enlistments').lower().decode('utf-8'))
+    location_page = etree.HTML(get_page('https://www.openhub.net/p/' + name + '/enlistments').decode('utf-8'))
 
     location_table = location_page.xpath(u"//table//tbody")[0]
     locations = [c.getchildren()[0].text.strip() for c in location_table.getchildren()]
