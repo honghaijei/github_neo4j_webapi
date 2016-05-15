@@ -23,7 +23,7 @@ def upload(data):
     ret, repo_id = utils.get_node('repository_index', 'repository_id', repo_name)
     if ret != None:
         raise KeyError("duplicate")
-    retry = 10
+    retry = 1000
     while retry != 0:
         try:
             if projects is None:
@@ -38,7 +38,7 @@ def upload(data):
     openhub_contributors = get_contributor('https://www.openhub.net/p/' + repo_name + '/contributors/summary')
     contributors = mess(json.dumps(contributors), openhub_contributors)
     for contributor in contributors:
-        retry = 10
+        retry = 100
         streak = None
         while retry != 0:
             try:
@@ -105,6 +105,6 @@ def upload(data):
 # content = None
 # with open('json-sample.txt', 'r') as f:
 #     content = ''.join(f.readlines())
-# content = unicode(content, errors='replace')
-# #content = content.decode("utf-8-sig")
+# #content = unicode(content, errors='replace')
+# content = content.decode("utf-8-sig")
 # upload(json.loads(content))
