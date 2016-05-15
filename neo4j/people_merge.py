@@ -1,12 +1,13 @@
 import json
+import logging
 def mess(mes_git, mes_open):
     merge_data = []
     data_git = json.loads(mes_git)
     data_open = mes_open
     for i in xrange(len(data_git)):
         contributor_git = data_git[i]
+        found = False
         for j in xrange(len(data_open)):
-            found = False
             contributor_open = data_open[j]
             if contributor_git['name'] == contributor_open['name']:
                 final_data = merge(contributor_git,contributor_open)
@@ -14,7 +15,7 @@ def mess(mes_git, mes_open):
                 found = True
                 break;
         if found == False:
-            print 'did not found contributor + ' + contributor_git['name']
+            merge_data.append(contributor_git)
     return merge_data
 
 def merge(data_git, data_open):
