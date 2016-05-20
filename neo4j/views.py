@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from neo4j.models import Project
+from neo4j.models import *
 from neo4j.serializers import *
 from django.http import Http404
 from rest_framework.views import APIView
@@ -11,6 +11,7 @@ import urllib2
 import base64
 import json
 from upload import upload
+
 
 class GitHubProject(APIView):
     def post(self, request, format=None):

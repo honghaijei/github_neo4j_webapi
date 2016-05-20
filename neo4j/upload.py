@@ -6,6 +6,7 @@ import openhub_project_news
 import time
 from people_get import get_contributor
 from people_merge import mess
+from neo4j.models import *
 
 
 def upload(data):
@@ -18,8 +19,11 @@ def upload(data):
     commits = data['commits']
     commit_files = data['commit_files']
     trees = data['trees']
-
     repo_name = repositories[0]['repositoryName']
+    for i in ProjectMapper.objects.all():
+        if i.github == repositories[0]['htmlUrl']:
+            repo_name = i.openhub.split('/')[-1]
+    print("repo_name: " + repo_name)
     ret, repo_id = utils.get_node('repository_index', 'repository_id', repo_name)
     if ret != None:
         raise KeyError("duplicate")
@@ -35,20 +39,27 @@ def upload(data):
             retry -= 1
             time.sleep(1)
             pass
+    if projects is None:
+        raise KeyError("Not found.")
+    if project_news is None:
+        raise KeyError("Not found.")
     openhub_contributors = get_contributor('https://www.openhub.net/p/' + repo_name + '/contributors/summary')
+
     contributors = mess(json.dumps(contributors), openhub_contributors)
-    for contributor in contributors:
-        retry = 100
-        streak = None
-        while retry != 0:
-            try:
-                streak = get_streak(contributor['login'])
-                break
-            except:
-                retry -= 1
-                pass
-        for k in streak:
-            contributor[k] = streak[k]
+    # for contributor in contributors:
+    #     retry = 100
+    #     streak = None
+    #     while retry != 0:
+    #         try:
+    #             print("try!!!" + contributor['login'])
+    #             streak = get_streak(contributor['login'])
+    #             print("getgetget!!!" + contributor['login'])
+    #             break
+    #         except:
+    #             retry -= 1
+    #             pass
+    #     for k in streak:
+    #         contributor[k] = streak[k]
 
     for commit in commits:
         ret, id = utils.create_node_with_id('commit_index', commit, 'Commit', 'commit_id', commit['sha'])
@@ -93,7 +104,7 @@ def upload(data):
         utils.create_relationship(repo_id, project_id, 'HAS_FILE')
 
     for project in projects:
-        _, repo_id = utils.get_node('repository_index', 'repository_id', project['project_name'])
+        # _, repo_id = utils.get_node('repository_index', 'repository_id', project['project_name'])
         ret, project_id = utils.create_node_with_id('project_index', project, 'Project', 'project_id', project['project_name'])
         utils.create_relationship(repo_id, project_id, 'HAS_PROJECT')
 
